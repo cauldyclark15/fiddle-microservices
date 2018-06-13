@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fiddle-rabbitmq-trial
+  labels:
+    name: fiddle-rabbitmq-trial
+spec:
+  containers:
+    - image: launcher.gcr.io/google/rabbitmq3
+      name: rabbitmq
+      env:
+        - name: "RABBITMQ_ERLANG_COOKIE"
+          value: "unique-erlang-cookie"
+      volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq
+  volumes:
+    - name: rabbitmq-data
+      persistentVolumeClaim:
+        claimName: rabbitmq-data
+---
+# Request a persistent volume from the cluster using a Persistent Volume Claim.
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: rabbitmq-data
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: default
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi
