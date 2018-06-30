@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-resource
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /toggle
+        backend:
+          serviceName: toggle-service
+          servicePort: 8080
+      - path: /app
+        backend:
+          serviceName: fiddle-app
+          servicePort: 8080

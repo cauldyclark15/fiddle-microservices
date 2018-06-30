@@ -2,16 +2,20 @@ const express = require('express');
 const amqp = require('amqplib/callback_api');
 const bodyParser = require('body-parser');
 const fetch = require('node-fetch');
+const cors = require('cors');
+const WebSocket = require('ws');
+const path = require('path');
 
 const app = express();
-const key = '$2a$10$gj1t4IZpOshgV09nGpZLn.EMiXW2YBudP9YESIzeofNwq.4Pd/Mkm';
-const URI = 'https://api.jsonbin.io/b/5b20a5e7c2e3344ccd96d631';
+const wss = new WebSocket.Server({ port: 2525 });
 const { rabbitmq } = process.env;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get('/', function(req, res) {
-  res.send('Please use /toggle route for operation.');
+  res.json({ message: 'ok' });
+  // res.sendfile(path.join(__dirname, 'dist'));
 });
 
 app.post('/toggle', function(req, res) {
@@ -41,52 +45,41 @@ app.post('/toggle', function(req, res) {
   );
 });
 
-amqp.connect(
-  rabbitmq,
-  function(err, conn) {
-    if (err) {
-      throw new Error(err);
-    }
+wss.on('open', () => {
+  wss.send('Toggle service connected');
+});
 
-    conn.createChannel(function(error, ch) {
-      if (error) {
-        throw new Error(error);
+wss.on('connection', function connection(ws) {
+  amqp.connect(
+    rabbitmq,
+    function(err, conn) {
+      if (err) {
+        throw new Error(err);
       }
 
-      const q = 'fiddle-slide';
+      conn.createChannel(function(error, ch) {
+        if (error) {
+          throw new Error(error);
+        }
 
-      ch.assertQueue(q, { durable: false });
-      ch.consume(
-        q,
-        function(msg) {
-          const state = parseInt(msg.content.toString(), 10);
-          const defaultBin = {
-            toggle: 'off',
-            value: 0,
-          };
+        const q = 'fiddle-slide';
 
-          const newBin = Object.assign({}, defaultBin, {
-            value: state,
-          });
+        ch.assertQueue(q, { durable: false });
+        ch.consume(
+          q,
+          function(msg) {
+            const state = parseInt(msg.content.toString(), 10);
 
-          return fetch(URI, {
-            method: 'PUT',
-            body: JSON.stringify(newBin),
-            headers: {
-              'Content-Type': 'application/json',
-              'secret-key': key,
-            },
-          })
-            .then(res => res.json())
-            .then(({ data }) => {
-              console.log('***** Application state: ', data, ' *****');
-            });
-        },
-        { noAck: true },
-      );
-    });
-  },
-);
+            try {
+              ws.send(JSON.stringify({ slider: state }));
+            } catch (error) {}
+          },
+          { noAck: true },
+        );
+      });
+    },
+  );
+});
 
 app.listen(process.env.PORT || 8080);
 

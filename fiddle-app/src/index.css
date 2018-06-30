@@ -1,5 +1,140 @@
+html,
 body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+fieldset {
+  margin: 30px auto 0;
+  width: 320px;
+  text-align: left;
+}
+
+form {
+  border-top: 1px solid #c8c7cc;
+  border-bottom: 1px solid #c8c7cc;
+}
+
+legend {
+  margin: 0 0 5px;
+  color: #6f6f74;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.item {
+  position: relative;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.item p {
+  border-top: 1px solid #c8c7cc;
+  margin: 0 0 0 8px;
+  height: 44px;
+  color: #000000;
+  font-size: 15px;
+  line-height: 44px;
+}
+
+.item:nth-child(1) p {
+  border: 0;
+}
+
+input[type="checkbox"] {
+  display: none;
+}
+
+.toggle {
+  margin: auto;
+  width: 251px;
+  height: 131px;
+}
+
+.toggle label,
+.toggle i {
+  box-sizing: border-box;
+  display: block;
+  background: #ffffff;
+}
+
+.toggle label {
+  width: 251px;
+  height: 132px;
+  border-radius: 131px;
+  border: 2px solid #e5e5e5;
+  transition: all 0.30s ease;
+}
+
+.toggle i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 128px;
+  height: 128px;
+  border-radius: 128px;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.25), 0 3px 3px 0 rgba(0, 0, 0, 0.15);
+  background: #ffffff;
+  transition: all 0.3s cubic-bezier(0.275, -0.450, 0.725, 1.450);
+}
+
+input[type="checkbox"]:active+.toggle i {
+  width: 128px;
+}
+
+input[type="checkbox"]:active+.toggle label,
+input[type="checkbox"]:checked+.toggle label {
+  /* border: 66px solid #4cd964; */
+  background-color: #4cd964;
+}
+
+input[type="checkbox"]:checked+.toggle i {
+  left: 121px;
+}
+
+input[type="checkbox"]:checked:active+.toggle label {
+  background-color: #4cd964;
+}
+
+input[type="checkbox"]:checked:active+.toggle i {
+  left: 100px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 120px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 120px;
+  border-radius: 120px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 120px;
+  height: 120px;
+  border-radius: 120px;
+  background: #4CAF50;
+  cursor: pointer;
 }

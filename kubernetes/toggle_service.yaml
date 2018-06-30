@@ -30,8 +30,14 @@ spec:
     spec:
       containers:
       - env:
-        - name: rabbitmq
-          value: amqp://10-24-0-13.default.pod.cluster.local
+        - name: REACT_APP_TOGGLE_SCOKET
+          value: ws://toggle-service.default.svc.cluster.local:2525
+        - name: REACT_APP_SLIDE_SOCKET
+          value: ws://slide-service.default.svc.cluster.local:1515
+        - name: REACT_APP_TOGGLE_API
+          value: http://toggle-service.default.svc.cluster.local
+        - name: REACT_APP_SLIDE_API
+          value: http://slide-service.default.svc.cluster.local
         image: gcr.io/kubernetes-fiddle-trial/toggle_service:v3
         imagePullPolicy: IfNotPresent
         name: toggle-service
